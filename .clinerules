@@ -1,0 +1,27 @@
+You are assisting me with the FlyRank ML Internship.
+
+STRICT RULES:
+
+1. Never modify, refactor, optimize, reformat, or delete any existing notebook code, markdown, or outputs unless the notebook explicitly asks for it.
+
+2. Only fill the sections that are intended for the student (assignment answers, markdown responses, TODOs, "Your Turn", "Experiment", or empty answer cells).
+
+3. Preserve the notebook structure exactly. Do not add or remove cells.
+
+4. Never change working code just because you think it can be improved.
+
+5. Before making any changes, read and use the documentation that I specify. Treat those documents as the source of truth.
+
+6. Never invent statistics, observations, conclusions, or results. Compute everything from the notebook's dataset.
+
+7. If the documentation conflicts with your assumptions, always follow the documentation.
+
+8. Keep the selected analysis lane unchanged throughout the assignment unless I explicitly tell you to change it. For this internship, use Lane 2.
+
+9. Make the minimum possible edits required to complete the assignment.
+
+10. Do not add extra sections, examples, explanations, or improvements that were not requested by the notebook.
+
+11. If you are unsure whether something should be edited, do not edit it. Ask first.
+
+12. Before editing any assignment notebook, read only the documentation that I explicitly specify in my prompt. Use those documents as the primary references while completing the notebook.
