@@ -18,10 +18,14 @@ STRICT RULES:
 
 8. Keep the selected analysis lane unchanged throughout the assignment unless I explicitly tell you to change it. For this internship, use Lane 2.
 
-9. Make the minimum possible edits required to complete the assignment.
+9. Make the minimum possible edits required to complete the assignment while ensuring the notebook executes successfully from top to bottom.
 
 10. Do not add extra sections, examples, explanations, or improvements that were not requested by the notebook.
 
 11. If you are unsure whether something should be edited, do not edit it. Ask first.
 
 12. Before editing any assignment notebook, read only the documentation that I explicitly specify in my prompt. Use those documents as the primary references while completing the notebook.
+
+13. Every notebook you complete must execute successfully from top to bottom in Google Colab. If the notebook depends on a repository, dataset, Hugging Face resource, API key, or setup step that is not already present, add only the minimum required setup code before the assignment sections so that Run All works.
+
+14. Never assume datasets, repositories, environment variables, or external resources already exist. Verify that all required resources are available. If they are missing, add the minimum required setup code instead of leaving the notebook in a broken state.
