@@ -1,0 +1,477 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Portfolio-Scale SEO Search Decay Prediction — Research Paper</title>
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link href="https://fonts.googleapis.com/css2?family=Source+Serif+4:ital,opsz,wght@0,8..60,400;0,8..60,600;0,8..60,700;1,8..60,400&family=Inter:wght@400;500;600&family=IBM+Plex+Mono:wght@400;500&display=swap" rel="stylesheet">
+<style>
+  :root{
+    --paper:#F7F5F0;
+    --paper-2:#F1EEE6;
+    --ink:#1C1B19;
+    --rule:#D8D2C4;
+    --signal:#1F6F5C;
+    --signal-soft:#E4EFEC;
+    --decay:#A6432F;
+    --decay-soft:#F4E7E3;
+    --muted:#6E6A5E;
+    --max:740px;
+  }
+  *{box-sizing:border-box;}
+  html{scroll-behavior:smooth;}
+  body{
+    margin:0;
+    background:var(--paper);
+    color:var(--ink);
+    font-family:'Inter', -apple-system, sans-serif;
+    font-size:17px;
+    line-height:1.65;
+    -webkit-font-smoothing:antialiased;
+  }
+  a{color:var(--signal);}
+  .wrap{max-width:var(--max); margin:0 auto; padding:0 24px;}
+
+  /* ---------- Masthead ---------- */
+  .masthead{
+    background:var(--paper);
+    border-bottom:1px solid var(--rule);
+    padding:64px 0 40px;
+  }
+  .eyebrow{
+    font-family:'IBM Plex Mono', monospace;
+    font-size:12px;
+    letter-spacing:.14em;
+    text-transform:uppercase;
+    color:var(--muted);
+    margin:0 0 18px;
+  }
+  h1.title{
+    font-family:'Source Serif 4', serif;
+    font-weight:700;
+    font-size:clamp(32px, 5vw, 46px);
+    line-height:1.12;
+    letter-spacing:-0.01em;
+    margin:0 0 20px;
+  }
+  .byline{
+    font-size:14px;
+    color:var(--muted);
+    display:flex;
+    gap:18px;
+    flex-wrap:wrap;
+    font-family:'IBM Plex Mono', monospace;
+  }
+
+  /* ---------- Ledger (signature element) ---------- */
+  .ledger{
+    margin:44px 0 0;
+    border-top:1px solid var(--rule);
+    border-bottom:1px solid var(--rule);
+    padding:22px 0;
+  }
+  .ledger-label{
+    font-family:'IBM Plex Mono', monospace;
+    font-size:11px;
+    letter-spacing:.12em;
+    text-transform:uppercase;
+    color:var(--muted);
+    margin-bottom:14px;
+  }
+  .bar-row{
+    display:grid;
+    grid-template-columns:150px 1fr 64px;
+    align-items:center;
+    gap:12px;
+    margin-bottom:10px;
+    font-family:'IBM Plex Mono', monospace;
+    font-size:13px;
+  }
+  .bar-row .name{color:var(--ink); white-space:nowrap; overflow:hidden; text-overflow:ellipsis;}
+  .bar-track{background:var(--paper-2); border-radius:3px; height:20px; position:relative; overflow:hidden;}
+  .bar-fill{height:100%; border-radius:3px;}
+  .bar-fill.baseline{background:var(--signal);}
+  .bar-fill.model{background:#B7AF9C;}
+  .bar-row .val{text-align:right; color:var(--ink); font-weight:500;}
+
+  /* ---------- Sections ---------- */
+  section{padding:52px 0;}
+  section + section{border-top:1px solid var(--rule);}
+  .sec-num{
+    font-family:'IBM Plex Mono', monospace;
+    font-size:12px;
+    color:var(--signal);
+    letter-spacing:.1em;
+    margin-bottom:10px;
+  }
+  h2{
+    font-family:'Source Serif 4', serif;
+    font-weight:600;
+    font-size:28px;
+    margin:0 0 20px;
+    letter-spacing:-0.01em;
+  }
+  h3{
+    font-family:'Source Serif 4', serif;
+    font-weight:600;
+    font-size:19px;
+    margin:32px 0 12px;
+  }
+  p{margin:0 0 16px; max-width:66ch;}
+  .lede{
+    font-family:'Source Serif 4', serif;
+    font-size:20px;
+    line-height:1.6;
+    color:var(--ink);
+  }
+  .callout{
+    background:var(--signal-soft);
+    border-left:3px solid var(--signal);
+    padding:16px 20px;
+    margin:20px 0;
+    font-size:15.5px;
+  }
+  .callout.warn{background:var(--decay-soft); border-left-color:var(--decay);}
+  ul, ol{padding-left:22px; margin:0 0 16px;}
+  li{margin-bottom:8px;}
+  code, .mono{font-family:'IBM Plex Mono', monospace; font-size:0.88em; background:var(--paper-2); padding:1px 5px; border-radius:3px;}
+
+  /* ---------- Data table ---------- */
+  table{width:100%; border-collapse:collapse; margin:20px 0; font-size:14.5px;}
+  th, td{padding:11px 10px; text-align:right; border-bottom:1px solid var(--rule);}
+  th:first-child, td:first-child{text-align:left;}
+  th{
+    font-family:'IBM Plex Mono', monospace;
+    font-size:11px;
+    letter-spacing:.06em;
+    text-transform:uppercase;
+    color:var(--muted);
+    font-weight:500;
+    border-bottom:1px solid var(--ink);
+  }
+  tr.win td{font-weight:600;}
+  tr.win td:first-child{color:var(--signal);}
+  .table-note{font-size:13px; color:var(--muted); margin-top:-8px; font-family:'IBM Plex Mono', monospace;}
+
+  /* ---------- Feature list ---------- */
+  .feature-grid{display:grid; gap:10px; margin:20px 0;}
+  .feature{
+    display:grid;
+    grid-template-columns:170px 1fr;
+    gap:14px;
+    padding:12px 0;
+    border-bottom:1px solid var(--rule);
+    font-size:15px;
+  }
+  .feature .fname{font-family:'IBM Plex Mono', monospace; font-size:13px; color:var(--signal); font-weight:500;}
+
+  /* ---------- Action mix ---------- */
+  .action-row{
+    display:grid;
+    grid-template-columns:1fr 90px 1fr;
+    gap:16px;
+    align-items:baseline;
+    padding:14px 0;
+    border-bottom:1px solid var(--rule);
+  }
+  .action-row .aname{font-weight:600;}
+  .action-row .acount{font-family:'IBM Plex Mono', monospace; text-align:right; color:var(--muted);}
+  .action-row .adesc{font-size:14px; color:var(--muted);}
+
+  /* ---------- Footer ---------- */
+  footer{
+    padding:48px 0 80px;
+    color:var(--muted);
+    font-size:14px;
+  }
+  footer a{color:var(--ink);}
+  .footer-rule{border-top:1px solid var(--rule); margin-bottom:32px;}
+
+  @media (max-width:560px){
+    .bar-row{grid-template-columns:110px 1fr 50px;}
+    .action-row{grid-template-columns:1fr; }
+    .action-row .acount{text-align:left;}
+  }
+</style>
+</head>
+<body>
+
+<header class="masthead">
+  <div class="wrap">
+    <p class="eyebrow">FlyRank ML Internship — Capstone Research Paper</p>
+    <h1 class="title">Portfolio-Scale SEO Search Decay Prediction</h1>
+    <div class="byline">
+      <span>Lane 2 — Refresh / Content Opportunity Scoring</span>
+      <span>·</span>
+      <span>101,441 content items · 70 brand portfolios</span>
+    </div>
+
+    <div class="ledger">
+      <div class="ledger-label">Precision@50 — top 50 picks that were genuinely declining</div>
+      <div class="bar-row">
+        <span class="name">Baseline (rules)</span>
+        <div class="bar-track"><div class="bar-fill baseline" style="width:92%"></div></div>
+        <span class="val">92.0%</span>
+      </div>
+      <div class="bar-row">
+        <span class="name">Logistic Regression</span>
+        <div class="bar-track"><div class="bar-fill model" style="width:62%"></div></div>
+        <span class="val">62.0%</span>
+      </div>
+      <div class="bar-row">
+        <span class="name">Random Forest</span>
+        <div class="bar-track"><div class="bar-fill model" style="width:52%"></div></div>
+        <span class="val">52.0%</span>
+      </div>
+      <div class="bar-row">
+        <span class="name">Decision Tree</span>
+        <div class="bar-track"><div class="bar-fill model" style="width:20%"></div></div>
+        <span class="val">20.0%</span>
+      </div>
+    </div>
+  </div>
+</header>
+
+<section id="abstract">
+  <div class="wrap">
+    <p class="sec-num">Abstract</p>
+    <p class="lede">
+      We train a Random Forest Classifier on five legally available, non-leaky search console
+      and web engagement features from March 2026 to predict whether search impressions will
+      decline by more than 20% in April 2026. Evaluating our model under an honest,
+      client-grouped split (72,470 train / 28,971 test, 0 overlapping clients), we find that a
+      simple rule-based baseline (Precision@50 = 92.0%) outperforms all trained ML models at
+      the top of the ranked queue — best: Logistic Regression at 62.0%, Random Forest at
+      52.0% — while the baseline's overall ROC AUC (0.5226) remains the weakest of the four.
+      This counterintuitive result demonstrates why grouped validation matters more than
+      headline model complexity.
+    </p>
+  </div>
+</section>
+
+<section id="question">
+  <div class="wrap">
+    <p class="sec-num">01 — Question</p>
+    <h2>Can we predict search decay before it shows up in the dashboard?</h2>
+    <p>
+      <strong>Research question:</strong> can we predict upcoming organic search decay for a
+      highly visible content item using only its local historical performance and engagement
+      signals — and prioritize these items in a ranked queue that outperforms static
+      heuristic rules?
+    </p>
+    <p>
+      In large-scale digital publishing, content operations teams face a screening
+      prioritisation bottleneck. High-authority evergreen pages represent major traffic and
+      revenue assets, but they naturally decay as search trends shift and competitor content
+      matures. Updating pages is labor-intensive — editors reviewing pages randomly, or by
+      simplistic rules, waste hours auditing healthy pages while missing visible assets on the
+      brink of collapse.
+    </p>
+    <p>
+      This research supports the content refresh prioritization decision: ranking the entire
+      portfolio continuously so editors can pull exactly the top <em>K</em> pages most in need
+      of a refresh, matching their weekly operational bandwidth.
+    </p>
+  </div>
+</section>
+
+<section id="data">
+  <div class="wrap">
+    <p class="sec-num">02 — Data</p>
+    <h2>A two-month window, one filter, no private data</h2>
+    <p>
+      We use the FlyRank Warehouse Release (<code>v20260703</code>), hosted on Hugging Face,
+      spanning distinct brand portfolios. To enforce prediction-time discipline:
+    </p>
+    <ul>
+      <li><strong>Feature / decision window</strong> — March 1–31, 2026 (<code>month = '2026-03'</code>). Every input feature is aggregated purely over this month.</li>
+      <li><strong>Outcome / label window</strong> — April 1–30, 2026 (<code>month = '2026-04'</code>). Decay is evaluated solely on April's search console impressions.</li>
+    </ul>
+    <p>
+      <strong>Population filters:</strong> pages must earn at least 100 organic impressions in
+      March, and rows lacking a GSC position or a content creation date are dropped. This
+      leaves <strong>101,441 active content items</strong>.
+    </p>
+    <p>
+      <strong>Exclusions:</strong> all PII, brand domains, URLs, titles, and raw search queries
+      are excluded. Identifiers are stable, scrambled pseudonyms (<code>client_hash_id</code>,
+      <code>content_hash_id</code>). No product-derived composite decisions — existing priority
+      scores or app-generated flags — are used as features, to avoid learning historical
+      administrative rules instead of the world.
+    </p>
+  </div>
+</section>
+
+<section id="methodology">
+  <div class="wrap">
+    <p class="sec-num">03 — Methodology</p>
+    <h2>Five honest features, one frozen baseline, two validation designs</h2>
+
+    <h3>Features</h3>
+    <div class="feature-grid">
+      <div class="feature"><span class="fname">mar_impressions</span><span>Total organic Search Console impressions earned in March.</span></div>
+      <div class="feature"><span class="fname">mar_clicks</span><span>Total organic Search Console clicks earned in March.</span></div>
+      <div class="feature"><span class="fname">mar_avg_position</span><span>Impression-weighted average Search Console position in March.</span></div>
+      <div class="feature"><span class="fname">mar_ga4_sessions_per_day</span><span>Average GA4 organic sessions per day, on days with active tracking.</span></div>
+      <div class="feature"><span class="fname">content_age_days</span><span>Days since content creation, as of March 31, 2026.</span></div>
+    </div>
+    <p>All five are knowable strictly before the label window — none are derived from the outcome.</p>
+
+    <h3>Target</h3>
+    <p>
+      <code>is_declining</code> = 1 if April impressions fall below 80% of March impressions
+      (or the page disappears entirely in April), else 0. Test-set base rate: <strong>51.7%</strong>.
+    </p>
+
+    <h3>Baseline (frozen, Week 4)</h3>
+    <p>
+      A transparent, hand-written rule, kept unchanged through every later assignment: a page
+      is flagged when it is <strong>stale</strong> (<code>content_age_days ≥ 365</code>) and
+      <strong>visible</strong> (<code>mar_impressions ≥ 500</code>), scored by its raw
+      impression count — <code>score = stale × visible × mar_impressions</code>.
+    </p>
+
+    <h3>Validation design</h3>
+    <p>
+      We compare a <strong>stratified random split</strong> against a
+      <strong>client-grouped split</strong> — entire brands held out, so no client's pages
+      appear in both train and test. The grouped design tests generalization to genuinely
+      unseen brands, and prevents the model from faking skill by memorizing brand-specific
+      configurations.
+    </p>
+
+    <h3>Leakage audit</h3>
+    <p>
+      We deliberately inject <code>apr_impressions</code> — the outcome-window metric — into
+      the training features. Retraining under this leaked feature drives ROC AUC to a near-perfect
+      <strong>0.9993</strong>, confirming our validation harness is sensitive to leakage and
+      that the honest five-feature set is properly insulated from it.
+    </p>
+  </div>
+</section>
+
+<section id="results">
+  <div class="wrap">
+    <p class="sec-num">04 — Results</p>
+    <h2>The baseline wins at the top — and loses everywhere else</h2>
+    <p class="table-note">Client-grouped holdout: 72,470 train rows / 28,971 test rows, 0 overlapping clients.</p>
+    <table>
+      <thead>
+        <tr><th>Model</th><th>ROC AUC</th><th>Avg. Precision</th><th>P@20</th><th>P@50</th></tr>
+      </thead>
+      <tbody>
+        <tr class="win"><td>Baseline rules (frozen)</td><td>0.5226</td><td>0.6731</td><td>1.0000</td><td>0.9200</td></tr>
+        <tr><td>Logistic Regression</td><td>0.5420</td><td>0.6599</td><td>0.8500</td><td>0.6200</td></tr>
+        <tr><td>Decision Tree</td><td>0.5936</td><td>0.7113</td><td>0.2000</td><td>0.2000</td></tr>
+        <tr><td>Random Forest</td><td>0.6046</td><td>0.7170</td><td>0.6000</td><td>0.5200</td></tr>
+      </tbody>
+    </table>
+
+    <div class="callout">
+      <strong>The baseline wins decisively at the top of the ranked list.</strong> It achieves
+      Precision@20 = 1.00 and Precision@50 = 0.92 — nearly every one of its top 50 picks was
+      genuinely declining. The best ML model at this cutoff, Logistic Regression, trails at
+      0.62 — a 30-point gap.
+    </div>
+
+    <p>
+      <strong>But ranking-wide, the baseline is the weakest model.</strong> Its ROC AUC
+      (0.5226) is the lowest of the four, while Random Forest (0.6046) and Decision Tree
+      (0.5936) rank better across the whole test set. The baseline only wins because it
+      correctly isolates a small, unambiguous set of "big, old, high-impression" pages at the
+      very top — it doesn't generalize as a full ranking.
+    </p>
+
+    <div class="callout warn">
+      <strong>Decision Tree is a cautionary case.</strong> Despite the second-best ROC AUC, its
+      Precision@20/@50 (0.20/0.20) sits at roughly the base rate — a reminder that overall
+      ranking skill and top-K precision can diverge sharply, and a single metric can mislead.
+    </div>
+
+    <p>
+      <strong>Practical takeaway:</strong> for this task, at these specific cutoffs, the simple
+      frozen baseline is genuinely hard to beat at the very top of the queue. Any real value
+      from the ML models here would need to be demonstrated deeper in the ranking, not in the
+      headline top-20/top-50 numbers.
+    </p>
+  </div>
+</section>
+
+<section id="limitations">
+  <div class="wrap">
+    <p class="sec-num">05 — Limitations</p>
+    <h2>What this work cannot claim</h2>
+    <ol>
+      <li><strong>Observational, not causal.</strong> This work documents observed associations between historical performance and search decline. We cannot claim that executing a suggested action — expanding content depth, say — will <em>cause</em> a recovery. That requires a controlled, randomized test against a matched control group.</li>
+      <li><strong>Unbalanced history footprint.</strong> Client historical depth varies wildly, which can skew features for younger sites compared to established assets.</li>
+      <li><strong>External variables excluded.</strong> Core algorithm updates, competitor activity, seasonal shifts, and industry-wide volume shocks aren't captured in local Search Console metrics — predictions remain subject to sudden external shocks.</li>
+    </ol>
+  </div>
+</section>
+
+<section id="recommendations">
+  <div class="wrap">
+    <p class="sec-num">06 — Ranked recommendations</p>
+    <h2>From a probability score to an editorial action</h2>
+    <p>
+      Model probabilities are mapped to five prioritized actions, moving the refresh workflow
+      from reactive to scheduled:
+    </p>
+
+    <div class="action-row">
+      <span class="aname">monitor</span>
+      <span class="acount">54,747</span>
+      <span class="adesc"><code>stable_rank</code> — probability &lt; 0.50; page currently stable, continue monitoring.</span>
+    </div>
+    <div class="action-row">
+      <span class="aname">standard_editorial_refresh</span>
+      <span class="acount">32,681</span>
+      <span class="adesc"><code>high/moderate_probability_decline</code> — probability ≥ 0.50; standard refresh cycle.</span>
+    </div>
+    <div class="action-row">
+      <span class="aname">protect_and_refresh</span>
+      <span class="acount">8,924</span>
+      <span class="adesc"><code>decay_risk_top_rank</code> — probability ≥ 0.75, position ≤ 10, age ≥ 180d; refresh immediately.</span>
+    </div>
+    <div class="action-row">
+      <span class="aname">ctr_and_engagement_review</span>
+      <span class="acount">4,977</span>
+      <span class="adesc"><code>low_engagement_visible</code> — visible but under-engaging; optimize meta/titles/layout.</span>
+    </div>
+    <div class="action-row">
+      <span class="aname">expand_and_refresh</span>
+      <span class="acount">112</span>
+      <span class="adesc"><code>thin_decay_candidate</code> — word count &lt; 1,200; expand semantic depth.</span>
+    </div>
+  </div>
+</section>
+
+<section id="reproducibility">
+  <div class="wrap">
+    <p class="sec-num">07 — Reproducibility</p>
+    <h2>Everything here is re-runnable</h2>
+    <p>
+      Every number on this page is computed live inside
+      <code>work/notebooks/capstone.ipynb</code>, which pulls directly from the FlyRank
+      warehouse on Hugging Face. The full weekly build-up — research framing, task framing,
+      data contract, baseline, model, validation audit, and action playbook — lives in
+      <code>work/notebooks/</code> in the linked repository below.
+    </p>
+    <p>
+      <a href="https://github.com/nandini3206/flyrank-ml-workspace">github.com/nandini3206/flyrank-ml-workspace</a>
+    </p>
+  </div>
+</section>
+
+<footer>
+  <div class="wrap">
+    <div class="footer-rule"></div>
+    <p>Built on the FlyRank ML Internship dataset — <a href="https://flyrank.ai">flyrank.ai</a>.</p>
+    <p>This work was completed as part of the FlyRank ML Internship. We're grateful to the engineering team at FlyRank for compiling and pseudonymizing the gated organic search and web analytics warehouse.</p>
+  </div>
+</footer>
+
+</body>
+</html>
